@@ -2,7 +2,7 @@
 import subprocess
 import re
 
-def detect(filepath):
+def detect(filepath, dB=-40, duration=3):
     cmd1 = [
             'ffmpeg',
             '-hide_banner',
@@ -12,7 +12,7 @@ def detect(filepath):
             ]
     cmd2 = [
             '-af',
-            'silencedetect=n=-45dB:d=3',
+            f'silencedetect=n={dB}dB:d={duration}',
             '-f',
             'null',
             '-',

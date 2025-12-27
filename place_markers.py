@@ -17,10 +17,14 @@ def place(filepath, silences):
         start_marker = ET.SubElement(asset_clip, "marker")
         start_marker.set("start", f"{s['start']}s")
         start_marker.set("value", f"Silence start {i}")
+        start_marker.set("duration", "100/6000s")
+        start_marker.set("completed", "0")
 
         end_marker = ET.SubElement(asset_clip, "marker")
         end_marker.set("start", f"{s['end']}s")
         end_marker.set("value", f"Silence end {i}")
+        end_marker.set("duration", "100/6000s")
+        end_marker.set("completed", "0")
 
     # Save the new FCPXML file
     src_filepath = os.path.join(d, b)
