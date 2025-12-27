@@ -21,6 +21,21 @@ cmd2 = [
 #        'silence',
         ]
 
+def detect(filepath):
+    # Compile commands
+    cmd = cmd1
+    cmd.append(filepath)
+    cmd = cmd + cmd2
+
+    process = subprocess.run(
+            cmd,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            text=True
+            )
+    output = process.stderr
+    return output
+
 def parse(stderr):
     silences = []
 
@@ -41,21 +56,9 @@ with open('data_video') as f:
     for line in f:
         if '\n' in line:
             line = line[:-1]
-    
-    # Compile commands
-    filepath = line
-    cmd = cmd1
-    cmd.append(filepath)
-    cmd = cmd + cmd2
 
-    process = subprocess.run(
-            cmd,
-            stderr=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-            text=True
-            )
-    stderr = process.stderr
-    
-    silences = parse(stderr)
-
-    print(silences)
+        # Compile commands
+        filepath = line
+        silences_ffmpeg = detect(filepath)
+        silences = parse(silences_ffmpeg)
+        print(silences)
