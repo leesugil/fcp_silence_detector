@@ -1,6 +1,6 @@
 [project]
 name = "fcpxml-silence-detector"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
   { name="Sugil Steve Lee", email="sugilmath@gmail.com" },
 ]
@@ -19,4 +19,4 @@ Homepage = "https://github.com/leesugil/fcp_silence_detector"
 Issues = "https://github.com/leesugil/fcp_silence_detector/issues"
 
 [project.scripts]
-detect-silence = "my_package.cli:main"
+fcp-detect-silence = "fcpxml_silence_detector.cli:main"
