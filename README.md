@@ -1,2 +1,2 @@
-# fcp_silence_detector
-Detects silence and place Markers in FCPXML
+# `fcp-silence-detector`
+Detects silence in video and place Markers in FCPXML
