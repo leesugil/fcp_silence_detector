@@ -36,7 +36,7 @@ def parse(stderr):
 
     return silences
 
-with open('data') as f:
+with open('data_video') as f:
     # Reading filepaths
     for line in f:
         if '\n' in line:
