@@ -16,10 +16,6 @@ def detect(filepath, dB=-40, duration=3):
             '-f',
             'null',
             '-',
-    #        '2>&1',
-    #        '|',
-    #        'grep',
-    #        'silence',
             ]
 
     # Compile commands
