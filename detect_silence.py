@@ -50,3 +50,28 @@ def parse(stderr):
             silences[-1]['duration'] = float(matchs.group(2))
 
     return silences
+
+def polish(silences, polish_duration=1):
+    """
+    silences = [
+            { 'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz },
+            ...
+        ]
+    """
+    output = []
+    interval = None
+    for i in silences:
+        if interval is None:
+            interval = i
+        else:
+            gap = i['start'] - interval['end']
+            if gap < polish_duration:
+                # merge
+                interval['end'] = i['end']
+                interval['duration'] = interval['end'] - interval['start']
+            else:
+                # store interval and start a new interval
+                output.append(interval)
+                interval = i
+    output.append(interval)
+    return output
