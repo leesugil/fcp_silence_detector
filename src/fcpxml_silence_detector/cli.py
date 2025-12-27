@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import detect_silence
-import place_markers
+from . import detect_silence
+from . import place_markers
 import os
 import argparse
 import xml.etree.ElementTree as ET
