@@ -2,26 +2,26 @@
 import subprocess
 import re
 
-cmd1 = [
-        'ffmpeg',
-        '-hide_banner',
-        '-loglevel',
-        'info',
-        '-i',
-        ]
-cmd2 = [
-        '-af',
-        'silencedetect=n=-45dB:d=3',
-        '-f',
-        'null',
-        '-',
-#        '2>&1',
-#        '|',
-#        'grep',
-#        'silence',
-        ]
-
 def detect(filepath):
+    cmd1 = [
+            'ffmpeg',
+            '-hide_banner',
+            '-loglevel',
+            'info',
+            '-i',
+            ]
+    cmd2 = [
+            '-af',
+            'silencedetect=n=-45dB:d=3',
+            '-f',
+            'null',
+            '-',
+    #        '2>&1',
+    #        '|',
+    #        'grep',
+    #        'silence',
+            ]
+
     # Compile commands
     cmd = cmd1
     cmd.append(filepath)
@@ -50,15 +50,3 @@ def parse(stderr):
             silences[-1]['duration'] = float(matchs.group(2))
 
     return silences
-
-with open('data_video') as f:
-    # Reading filepaths
-    for line in f:
-        if '\n' in line:
-            line = line[:-1]
-
-        # Compile commands
-        filepath = line
-        silences_ffmpeg = detect(filepath)
-        silences = parse(silences_ffmpeg)
-        print(silences)
