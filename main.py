@@ -26,7 +26,6 @@ def main():
         vf = clean_filepath(vf)
         xf = clean_filepath(xf) 
         ffmpeg_silences = detect_silence.detect(vf, dB, duration)
-        ffmpeg_silences = detect_silence.detect(vf)
         silences = detect_silence.parse(ffmpeg_silences)
         place_markers.place(xf, silences)
 
