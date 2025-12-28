@@ -71,3 +71,30 @@ def polish(silences, polish_duration=1):
                 interval = i
     output.append(interval)
     return output
+
+def buffer(silences, buffer_duration=1):
+    """
+    Gives more room for non-silence regions by shrinking the silent duration by buffer_duration.
+    The buffer_duration should be shorter than the duration from detect().
+
+    silences = [
+            { 'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz },
+            ...
+        ]
+    """
+    output = []
+    for i in silences:
+        if i['duration'] > buffer_duration:
+            i['start'] += buffer_duration/2
+            i['end'] -= buffer_duration/2
+            i['duration'] = i['end'] - i['start']
+        output.append(i)
+    return output
+
+def offset(silences, offset=0):
+    output = []
+    for i in silences:
+        i['start'] += offset
+        i['end'] += offset
+        output.append(i)
+    return output
