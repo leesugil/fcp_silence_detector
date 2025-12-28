@@ -47,7 +47,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Detect silences in audio and add FCP Markers")
     parser.add_argument("fcpxml_filepath", help="Absolute filepath to fcpxml (required)")
-    parser.add_argument("--db", type=float, default=-45.0, help="Silence threshold in dB")
+    parser.add_argument("--db", type=float, default=-40.0, help="Silence threshold in dB")
     parser.add_argument("--duration", type=float, default=3.5, help="Minimum silence duration in seconds")
     parser.add_argument("--polish_duration", type=float, default=0.7, help="Maximum non-silence duration in seconds")
     parser.add_argument("--buffer_duration", type=float, default=1.5, help="Amount to reduce silence duration in seconds. (Should be greater than duration)")
