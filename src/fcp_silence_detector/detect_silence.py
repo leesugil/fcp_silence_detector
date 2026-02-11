@@ -3,6 +3,9 @@ import subprocess
 import re
 
 def detect(filepath, dB=-40, duration=3):
+    """
+    This runs the ffmpeg command to detect silence and returns the ffmpeg output so that later functions can parse relevant information from there.
+    """
     cmd1 = [
             'ffmpeg',
             '-hide_banner',
@@ -33,6 +36,11 @@ def detect(filepath, dB=-40, duration=3):
     return output
 
 def parse(stderr):
+    """
+    Given the ffmpeg output message, this parses the silent region info,
+    returns the info as a list of dictionaries.
+    [{'start': 'hh:mm:ss', 'end': 'hh:mm:ss', 'duration': 'hh:mm:ss'}, {...}, ...]
+    """
     silences = []
 
     for line in stderr.splitlines():
