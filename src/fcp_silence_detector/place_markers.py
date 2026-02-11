@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from tqdm import tqdm
 from . import fcpxml_io
 
-def place(filepath: str, silences: list[dict], sync=False):
+def place(filepath: str, silences: list[dict], affix: str, sync=False):
     """
     silences: [{'start': 'hh:mm:ss', 'end': 'hh:mm:ss', 'duration': 'hh:mm:ss'}, {...}, ...]
     """
@@ -24,5 +24,5 @@ def place(filepath: str, silences: list[dict], sync=False):
         end_marker.set("duration", "100/6000s")
         end_marker.set("completed", "0")
 
-    fcpxml_io.save(tree, filepath, 'silence_marked_')
+    fcpxml_io.save(tree, filepath, affix)
 
