@@ -39,7 +39,7 @@ def parse(stderr):
     """
     Given the ffmpeg output message, this parses the silent region info,
     returns the info as a list of dictionaries.
-    [{'start': 'hh:mm:ss', 'end': 'hh:mm:ss', 'duration': 'hh:mm:ss'}, {...}, ...]
+    [{'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz}, {...}, ...]
     """
     silences = []
 
@@ -47,6 +47,7 @@ def parse(stderr):
         if 'silence_start' in line:
             t = float(re.search(r'silence_start: ([0-9.]+)', line).group(1))
             silences.append({'start': t})
+            print(line)
         elif 'silence_end' in line:
             matchs = re.search(r'silence_end: ([0-9.]+) \| silence_duration: ([0-9.]+)', line
                             )

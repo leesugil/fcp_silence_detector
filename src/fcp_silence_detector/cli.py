@@ -46,19 +46,12 @@ def parse_fcpxml_filepath_sync(xf):
 
     return output1, output2
 
-def parse_numbers(string: str) -> list[int]:
-    """
-    "1,2,3,4" -> [1, 2, 3, 4]
-    """
-    output = [int(x.strip()) for x in string.split(',')]
-    return output
-
 def main():
 
     # Define possible arguments
     # ex)
     # fcp-detect-silence --db=-40 --duration=0.75 --polish_duration=0.5 --buffer_duration=0.4 --affix='silence_marked_' --sync=1 <file_path>
-    parser = argparse.ArgumentParser(description="Detect silences in audio and texts in video, place FCP Markers")
+    parser = argparse.ArgumentParser(description="Detect silences in audio in video, place FCP Markers")
     parser.add_argument("fcpxml_filepath", help="Absolute filepath to fcpxml (required)")
     # audio related
     """
@@ -109,8 +102,11 @@ def main():
     def detect_silences(file_path, db, duration, polish_duration, buffer_duration):
         ffmpeg_silences = detect_silence.detect(file_path, db, duration)
         silences = detect_silence.parse(ffmpeg_silences)
+        #print(f":::1::: {silences[0]}")
         silences = detect_silence.polish(silences, polish_duration)
+        #print(f":::2::: {silences[0]}")
         silences = detect_silence.buffer(silences, buffer_duration)
+        #print(f":::3::: {silences[0]}")
         output = silences
         return output
 

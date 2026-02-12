@@ -4,7 +4,7 @@ from . import fcpxml_io
 
 def place(filepath: str, silences: list[dict], affix: str, sync=False):
     """
-    silences: [{'start': 'hh:mm:ss', 'end': 'hh:mm:ss', 'duration': 'hh:mm:ss'}, {...}, ...]
+    silences: [{'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz}, {...}, ...]
     """
     tree, root = fcpxml_io.get_fcpxml(filepath)
     asset_clip = fcpxml_io.get_clip(root, sync)
