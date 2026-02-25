@@ -50,7 +50,7 @@ def main():
 
     # Define possible arguments
     # ex)
-    # fcp-detect-silence --db=-40 --duration=0.75 --polish_duration=0.5 --buffer_duration=0.4 --affix='silence_marked_' --sync=1 <file_path>
+    # fcp-detect-silence --db=-40 --duration=0.75 --polish_duration=0.5 --buffer_duration=0.4 --track=0 --affix='silence_marked_' --sync=1 <file_path>
     parser = argparse.ArgumentParser(description="Detect silences in audio in video, place FCP Markers")
     parser.add_argument("fcpxml_filepath", help="Absolute filepath to fcpxml (required)")
     # audio related
@@ -80,6 +80,8 @@ def main():
     parser.add_argument("--duration", type=float, default=1.0, help="Minimum silence duration in seconds")
     parser.add_argument("--polish_duration", type=float, default=0.5, help="Miminum non-silence duration in seconds")
     parser.add_argument("--buffer_duration", type=float, default=0.4, help="Amount to reduce silence duration in seconds. (Should not be greater than duration)")
+    # audio track if multitrack
+    parser.add_argument("--track", type=int, default=0, help="aduio track to scan if multitrack")
     # output
     parser.add_argument("--affix", type=str, default='silence_marked_', help="affix to modify the output filename")
     # synched clip
@@ -96,7 +98,7 @@ def main():
         af = clean_filepath(af)
     print(f"fcpxml file: {xf}")
     print(f"video file: {vf}")
-    print(f"audio file: {af}")
+    print(f"audio track: 0:{args.track}")
 
     # detect silences
     def detect_silences(file_path, db, duration, polish_duration, buffer_duration):
