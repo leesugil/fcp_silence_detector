@@ -2,46 +2,19 @@
 import subprocess
 import re
 
-def detect(filepath, dB=-40, duration=3, track=0):
+def detect(filepath, dB=-40, duration=3, track=1):
     """
     This runs the ffmpeg command to detect silence and returns the ffmpeg output so that later functions can parse relevant information from there.
     """
-#   cmd1 = [
-#           'ffmpeg',
-#           '-hide_banner',
-#           '-loglevel',
-#           'info',
-#           '-i',
-#           ]
-#   cmd2 = [
-#           '-map',
-#           f'0:{track}',
-#           '-af',
-#           f'silencedetect=n={dB}dB:d={duration}',
-#           '-f',
-#           'null',
-#           '-',
-#           ]
-
-#   # Compile commands
-#   cmd = cmd1
-#   cmd.append(filepath)
-#   cmd = cmd + cmd2
 
     cmd = [
-            'ffmpeg',
-            '-hide_banner',
-            '-loglevel',
-            'info',
-            '-i',
+            'ffmpeg', '-hide_banner', '-loglevel', 'info', '-i',
             f'{filepath}',
             '-map',
             f'0:{track}',
             '-af',
             f'silencedetect=n={dB}dB:d={duration}',
-            '-f',
-            'null',
-            '-',
+            '-f', 'null', '-',
             ]
 
     process = subprocess.run(
@@ -118,10 +91,3 @@ def buffer(silences, buffer_duration=1):
         output.append(i)
     return output
 
-def offset(silences, offset=0):
-    output = []
-    for i in silences:
-        i['start'] += offset
-        i['end'] += offset
-        output.append(i)
-    return output
