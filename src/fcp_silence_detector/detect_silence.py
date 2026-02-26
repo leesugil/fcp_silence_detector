@@ -91,3 +91,11 @@ def buffer(silences, buffer_duration=1):
         output.append(i)
     return output
 
+
+# detect silences
+def detect_silences(file_path, db, duration, polish_duration, buffer_duration, track):
+    ffmpeg_silences = detect(file_path, db, duration, track)
+    silences = parse(ffmpeg_silences)
+    silences = polish(silences, polish_duration)
+    silences = buffer(silences, buffer_duration)
+    return silences

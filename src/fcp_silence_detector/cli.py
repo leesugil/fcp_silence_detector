@@ -2,19 +2,18 @@
 
 import argparse
 import xml.etree.ElementTree as ET
-from urllib.parse import urlparse, unquote
 
 from . import detect_silence
 from . import place_markers
 from fcp_io import fcpxml_io
 
 def main():
-
     # Define possible arguments
-    # ex)
     # fcp-detect-silence --db=-40 --duration=0.75 --polish_duration=0.5 --buffer_duration=0.4 --track=0 --affix='silence_marked_' <file_path>
     parser = argparse.ArgumentParser(description="Detect silences in audio in video, place FCP Markers")
     parser.add_argument("fcpxml_filepath", help="Absolute filepath to fcpxml (required)")
+    parser.add_argument("--event", action="store_true", help="Add this if the fcpxml file is exported from an Event item, not a Project in FCP.")
+    parser.add_argument("--keyword", type=str, default='silence', help="Keyword to be used in Marker description")
     # audio related
     """
     Audio arguments explained:
@@ -46,40 +45,23 @@ def main():
     parser.add_argument("--track", type=int, default=1, help="aduio track to scan if multitrack")
     # output
     parser.add_argument("--affix", type=str, default='silence_marked_', help="affix to modify the output filename")
-    # synched clip
-    #parser.add_argument("--sync", type=int, default=0, help="(experimental) synched clip.")
 
     args = parser.parse_args()
 
     xf = fcpxml_io.clean_filepath(args.fcpxml_filepath)
     vf = fcpxml_io.clean_filepath(fcpxml_io.parse_fcpxml_filepath(xf))
     af = vf
-#   if args.sync == 1:
-#       vf, af = parse_fcpxml_filepath_sync(xf)
-#       vf = clean_filepath(vf)
-#       af = clean_filepath(af)
     print(f"fcpxml file: {xf}")
     print(f"video file: {vf}")
     print(f"audio track: 0:{args.track}")
 
-    # detect silences
-    def detect_silences(file_path, db, duration, polish_duration, buffer_duration, track):
-        ffmpeg_silences = detect_silence.detect(file_path, db, duration, track)
-        silences = detect_silence.parse(ffmpeg_silences)
-        #print(f":::1::: {silences[0]}")
-        silences = detect_silence.polish(silences, polish_duration)
-        #print(f":::2::: {silences[0]}")
-        silences = detect_silence.buffer(silences, buffer_duration)
-        #print(f":::3::: {silences[0]}")
-        output = silences
-        return output
+    # Detect silence
+    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track)
 
-    silences = detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track)
-
-    #sync = True if args.sync == 1 else False
-    #place_markers.place(filepath=xf, silences=silences, affix=args.affix, sync=sync)
+    # Place Markers
+    tree, root = fcpxml_io.get_fcpxml(xf)
     fps = fcpxml_io.get_fps(root)
-    place_markers.place(filepath=xf, silences=silences, fps=fps)
+    place_markers.place(root=root, silences=silences, fps=fps, keyword=args.keyword, in_event=args.event)
 
     fcpxml_io.save_with_affix(tree=tree, src_filepath=xf, affix=args.affix)
 
