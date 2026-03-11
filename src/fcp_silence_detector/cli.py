@@ -56,7 +56,7 @@ def main():
     print(f"audio track: 0:{args.track}")
 
     # Detect silence
-    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish-duration, buffer_duration=args.buffer-duration, track=args.track)
+    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track)
 
     # Place Markers
     tree, root = fcpxml_io.get_fcpxml(xf)

@@ -36,7 +36,8 @@ def parse(stderr):
 
     for line in stderr.splitlines():
         if 'silence_start' in line:
-            t = float(re.search(r'silence_start: ([0-9.]+)', line).group(1))
+            #t = float(re.search(r'silence_start: ([0-9.]+)', line).group(1))
+            t = float(re.search(r'silence_start: (-?[0-9.]+)', line).group(1))
             silences.append({'start': t})
             print(line)
         elif 'silence_end' in line:
