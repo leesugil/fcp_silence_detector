@@ -45,6 +45,8 @@ def main():
     parser.add_argument("--track", type=int, default=1, help="aduio track to scan if multitrack")
     # output
     parser.add_argument("--affix", type=str, default='silence_marked_', help="affix to modify the output filename")
+    # debug
+    parser.add_argument("--debug", action="store_true", help="Debug mode")
 
     args = parser.parse_args()
 
@@ -56,12 +58,12 @@ def main():
     print(f"audio track: 0:{args.track}")
 
     # Detect silence
-    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track)
+    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track, debug=args.debug)
 
     # Place Markers
     tree, root = fcpxml_io.get_fcpxml(xf)
     fps = fcpxml_io.get_fps(root)
-    place_markers.place(root=root, silences=silences, fps=fps, keyword=args.keyword, in_event=args.event)
+    place_markers.place(root=root, silences=silences, fps=fps, keyword=args.keyword, in_event=args.event, debug=args.debug)
 
     fcpxml_io.save_with_affix(tree=tree, src_filepath=xf, affix=args.affix)
 

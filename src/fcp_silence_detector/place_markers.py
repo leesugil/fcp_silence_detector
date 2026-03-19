@@ -12,6 +12,8 @@ def place(root, silences: list[dict], fps: str, keyword: str, in_event: bool=Fal
     if audio_channel is not None:
         print("🐝 audio-channel-source found!")
 
+    previous_end = None
+
     # Place silence Markers
     for i, s in tqdm(enumerate(silences, start=1)):
         start = arithmetic.float2fcpsec(s['start'], fps)
@@ -37,8 +39,17 @@ def place(root, silences: list[dict], fps: str, keyword: str, in_event: bool=Fal
         end_marker.set("duration", fps)
         end_marker.set("completed", "0")
 
+        # proof
+        silence_duration = arithmetic.fcpsec2frac(end) - arithmetic.fcpsec2frac(start)
+        assert silence_duration > arithmetic.Fraction(0, 1)
+        if previous_end:
+            silence_gap_from_previous = arithmetic.fcpsec2frac(start) - previous_end
+            assert silence_gap_from_previous > 0
+
         if audio_channel is not None:
             asset_clip.insert(index+1, end_marker)
         else:
             asset_clip.append(end_marker)
+
+        previous_end = arithmetic.fcpsec2frac(end)
 

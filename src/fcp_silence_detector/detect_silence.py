@@ -2,7 +2,7 @@
 import subprocess
 import re
 
-def detect(filepath, dB=-40, duration=3, track=1):
+def detect(filepath, dB=-40, duration=3, track=1, debug=False):
     """
     This runs the ffmpeg command to detect silence and returns the ffmpeg output so that later functions can parse relevant information from there.
     """
@@ -26,7 +26,7 @@ def detect(filepath, dB=-40, duration=3, track=1):
     output = process.stderr
     return output
 
-def parse(stderr):
+def parse(stderr, debug=False):
     """
     Given the ffmpeg output message, this parses the silent region info,
     returns the info as a list of dictionaries.
@@ -45,10 +45,11 @@ def parse(stderr):
                             )
             silences[-1]['end'] = float(matchs.group(1))
             silences[-1]['duration'] = float(matchs.group(2))
+            assert silences[-1]['duration'] > 0
 
     return silences
 
-def polish(silences, polish_duration=1):
+def polish(silences, polish_duration=1, debug=False):
     """
     silences = [
             { 'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz },
@@ -73,7 +74,7 @@ def polish(silences, polish_duration=1):
     output.append(interval)
     return output
 
-def buffer(silences, buffer_duration=1):
+def buffer(silences, buffer_duration=1, debug=False):
     """
     Gives more room for non-silence regions by shrinking the silent duration by buffer_duration.
     The buffer_duration should be shorter than the duration from detect().
@@ -94,7 +95,7 @@ def buffer(silences, buffer_duration=1):
 
 
 # detect silences
-def detect_silences(file_path, db, duration, polish_duration, buffer_duration, track):
+def detect_silences(file_path, db, duration, polish_duration, buffer_duration, track, debug=False):
     ffmpeg_silences = detect(file_path, db, duration, track)
     silences = parse(ffmpeg_silences)
     silences = polish(silences, polish_duration)
