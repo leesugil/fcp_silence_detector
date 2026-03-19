@@ -3,7 +3,7 @@ from tqdm import tqdm
 from fcp_io import fcpxml_io
 from fcp_math import arithmetic
 
-def place(root, silences: list[dict], fps: str, keyword: str, in_event: bool=False):
+def place(root, silences: list[dict], fps: str, keyword: str, in_event: bool=False, debug=False):
     """
     silences: [{'start': xx.xxx, 'end': yy.yyy, 'duration': zz.zzz}, {...}, ...]
     """

@@ -41,6 +41,9 @@ def main():
     parser.add_argument("--duration", type=float, default=1.0, help="Minimum silence duration in seconds")
     parser.add_argument("--polish-duration", type=float, default=0.5, help="Miminum non-silence duration in seconds")
     parser.add_argument("--buffer-duration", type=float, default=0.4, help="Amount to reduce silence duration in seconds. (Should not be greater than duration)")
+    # silence detection from the beginning to the end
+    parser.add_argument("--start-time-threshold", type=float, default=0.0, help="When ffmpeg detects silence, it might not capture silence from 0.0s of the audio. This ensures 'If silence starts within the first x seconds, assume the silence started from the beginning.")
+    parser.add_argument("--end-time-threshold", type=float, default=0.0, help="When ffmpeg detects silence, it might not capture silence from 0.0s of the audio. This ensures 'If silence starts within the first x seconds, assume the silence started from the beginning.")
     # audio track if multitrack
     parser.add_argument("--track", type=int, default=1, help="aduio track to scan if multitrack")
     # output
@@ -59,6 +62,10 @@ def main():
 
     # Detect silence
     silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track, debug=args.debug)
+
+    # Adjust first and last silent regions to fit to FCPXML Project Timeline.
+    tree, root = fcpxml_io.get_fcpxml(xf)
+    silences = detect_silence.adjust_to_fcpxml_timeline(silences=silences, root=root, start_time_threshold=args.start_time_threshold, end_time_threshold=args.end_time_threshold, debug=args.debug)
 
     # Place Markers
     tree, root = fcpxml_io.get_fcpxml(xf)
