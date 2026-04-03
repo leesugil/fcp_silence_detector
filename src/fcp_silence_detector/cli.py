@@ -54,23 +54,21 @@ def main():
     args = parser.parse_args()
 
     xf = fcpxml_io.clean_filepath(args.fcpxml_filepath)
-    vf = fcpxml_io.clean_filepath(fcpxml_io.parse_fcpxml_filepath(xf))
-    af = vf
-    print(f"fcpxml file: {xf}")
-    print(f"video file: {vf}")
-    print(f"audio track: 0:{args.track}")
-
-    # Detect silence
-    silences = detect_silence.detect_silences(file_path=af, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track, debug=args.debug)
-
-    # Adjust first and last silent regions to fit to FCPXML Project Timeline.
-    tree, root = fcpxml_io.get_fcpxml(xf)
-    silences = detect_silence.adjust_to_fcpxml_timeline(silences=silences, root=root, start_time_threshold=args.start_time_threshold, end_time_threshold=args.end_time_threshold, debug=args.debug)
-
-    # Place Markers
     tree, root = fcpxml_io.get_fcpxml(xf)
     fps = fcpxml_io.get_fps(root)
-    place_markers.place(root=root, silences=silences, fps=fps, keyword=args.keyword, in_event=args.event, debug=args.debug)
+    asset_clips = fcpxml_io.get_all_spine_asset_clips(root=root)
+    print(f"fcpxml file: {xf}")
+
+    # Detect silence in <asset-clip>s in the Project Timeline
+    for asset_clip in asset_clips:
+        # Silence detection using ffmpeg
+        silences = detect_silence.detect_silences_from_fcpxml_asset_clip(asset_clip=asset_clip, root=root, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_duration=args.buffer_duration, track=args.track, debug=args.debug)
+
+        # Adjust first and last silent regions to fit to FCPXML Project Timeline.
+        silences = detect_silence.adjust_to_fcpxml_timeline(silences=silences, asset_clip=asset_clip, start_time_threshold=args.start_time_threshold, end_time_threshold=args.end_time_threshold, fps=fps, debug=args.debug)
+
+        # Place Markers
+        place_markers.place_in_asset_clip(asset_clip=asset_clip, silences=silences, fps=fps, keyword=args.keyword, in_event=args.event, debug=args.debug)
 
     fcpxml_io.save_with_affix(tree=tree, src_filepath=xf, affix=args.affix)
 

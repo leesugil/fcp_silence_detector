@@ -183,18 +183,31 @@ def detect_silences(file_path, db, duration, polish_duration, buffer_duration, t
     silences = buffer(silences, buffer_duration, debug=debug)
     return silences
 
-# adjust to fcpxml timeline
-def adjust_to_fcpxml_timeline(silences, root, start_time_threshold: float=0.0, end_time_threshold: float=0.0, debug=False):
+# adjust ffmpeg-detected silent region duration to fcpxml asset-clip timeline duration
+def adjust_to_fcpxml_timeline(silences, asset_clip, start_time_threshold: float=0.0, end_time_threshold: float=0.0, fps='100/6000s', debug=False):
+    """
+    When the source audio starts and/or ends in silence,
+    the silence regions detected by ffmpeg and further post-processing algorithms leaves out the very first and last moment of the audio source as "not silent".
+    This hot-fix fixes that.
+    The output is given in the local timeline of the source media, not the global timeline of the Project Timeline and Asset-Clip.
+    """
     if debug:
         print(f"adjust_to_fcpxml_timeline start_time_threshold: {start_time_threshold}, end_time_threhold: {end_time_threshold}")
     if start_time_threshold > 0.0:
         silences = start_time_adjustment(silences=silences, start_time_threshold=start_time_threshold, debug=debug)
 
     if end_time_threshold > 0.0:
-        asset_clip = fcpxml_io.get_spine_asset_clip(root)
         audio_length = arithmetic.fcpsec2frac(asset_clip.get('duration'))
         if debug:
             print(f"adjust_to_fcpxml_timeline source audio_length: {audio_length}")
         silences = end_time_adjustment(silences=silences, audio_length=audio_length, end_time_threshold=end_time_threshold, debug=debug)
 
     return silences
+
+def detect_silences_from_fcpxml_asset_clip(asset_clip, root, db, duration, polish_duration, buffer_duration, track, debug=False):
+    af = fcpxml_io.parse_resource_filepath_from_asset_clip(asset_clip=asset_clip, root=root, debug=debug)
+    print(f"audio source media file: {af}")
+    print(f"audio track: 0:{track}")
+    output = detect_silences(file_path=af, db=db, duration=duration, polish_duration=polish_duration, buffer_duration=buffer_duration, track=track, debug=debug)
+    return output
+
