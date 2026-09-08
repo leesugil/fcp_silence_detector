@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--start-time-threshold", type=float, default=0.0, help="When ffmpeg detects silence, it might not capture silence from 0.0s of the audio. This ensures 'If silence starts within the first x seconds, assume the silence started from the beginning.")
     parser.add_argument("--end-time-threshold", type=float, default=0.0, help="When ffmpeg detects silence, it might not capture silence from 0.0s of the audio. This ensures 'If silence starts within the first x seconds, assume the silence started from the beginning.")
     # audio track if multitrack
-    parser.add_argument("--track", type=int, default=1, help="aduio track to scan if multitrack")
+    parser.add_argument("--track", type=int, default=1, help="Stream number N for 0:N when inspected by ffmpeg. It's the audio track to scan for silence if multitrack.")
     # source file change when working with proxy media
     parser.add_argument("--proxy-media", action="store_true", help="Read from proxy media file instead of the source media file. Useful when the source media is externally stored and not available at the moment.")
     # output
