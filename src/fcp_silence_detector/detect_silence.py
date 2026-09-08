@@ -211,8 +211,8 @@ def adjust_to_fcpxml_timeline(silences, asset_clip, start_time_threshold: float=
 
     return silences
 
-def detect_silences_from_fcpxml_asset_clip(asset_clip, root, db, duration, polish_duration, buffer_start_duration, buffer_end_duration, track, debug=False):
-    af = fcpxml_io.parse_resource_filepath_from_asset_clip(asset_clip=asset_clip, root=root, debug=debug)
+def detect_silences_from_fcpxml_asset_clip(asset_clip, root, db, duration, polish_duration, buffer_start_duration, buffer_end_duration, track, proxy_media=False, debug=False):
+    af = fcpxml_io.parse_resource_filepath_from_asset_clip(asset_clip=asset_clip, root=root, proxy_media=proxy_media, debug=debug)
     print(f"audio source media file: {af}")
     print(f"audio track: 0:{track}")
     output = detect_silences(file_path=af, db=db, duration=duration, polish_duration=polish_duration, buffer_start_duration=buffer_start_duration, buffer_end_duration=buffer_end_duration, track=track, debug=debug)

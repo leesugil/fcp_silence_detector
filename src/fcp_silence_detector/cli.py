@@ -48,6 +48,8 @@ def main():
     parser.add_argument("--end-time-threshold", type=float, default=0.0, help="When ffmpeg detects silence, it might not capture silence from 0.0s of the audio. This ensures 'If silence starts within the first x seconds, assume the silence started from the beginning.")
     # audio track if multitrack
     parser.add_argument("--track", type=int, default=1, help="aduio track to scan if multitrack")
+    # source file change when working with proxy media
+    parser.add_argument("--proxy-media", action="store_true", help="Read from proxy media file instead of the source media file. Useful when the source media is externally stored and not available at the moment.")
     # output
     parser.add_argument("--affix", type=str, default='silence_marked_', help="affix to modify the output filename")
     # debug
@@ -68,7 +70,7 @@ def main():
     # Detect silence in <asset-clip>s in the Project Timeline
     for asset_clip in asset_clips:
         # Silence detection using ffmpeg
-        silences = detect_silence.detect_silences_from_fcpxml_asset_clip(asset_clip=asset_clip, root=root, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_start_duration=args.buffer_start_duration, buffer_end_duration=args.buffer_end_duration, track=args.track, debug=args.debug)
+        silences = detect_silence.detect_silences_from_fcpxml_asset_clip(asset_clip=asset_clip, root=root, db=args.db, duration=args.duration, polish_duration=args.polish_duration, buffer_start_duration=args.buffer_start_duration, buffer_end_duration=args.buffer_end_duration, track=args.track, proxy_media=args.proxy_media, debug=args.debug)
 
         # Adjust first and last silent regions to fit to FCPXML Project Timeline.
         silences = detect_silence.adjust_to_fcpxml_timeline(silences=silences, asset_clip=asset_clip, start_time_threshold=args.start_time_threshold, end_time_threshold=args.end_time_threshold, fps=fps, debug=args.debug)
